@@ -11,6 +11,7 @@
 - **本章角色**：学会 Chat Completions（或等价 Chat API）的请求结构、关键参数、流式与错误重试；并设计多模型适配层。
 - **实践约定**：有 Key 就打真 API；没有就写 `FakeLLM`（或早期教学用 `EchoLLM`），**接口保持与 [`CONVENTIONS.md`](../CONVENTIONS.md) 一致**。
 - **目标不是**：背全厂商文档或成为 SDK 专家；能封装、能排障、能换供应商即可。
+- **分层边界**：本章是 Provider delta / `tool_calls` 拼装的 canonical；FastAPI SSE framing、心跳、错误与断连取消见 [`../06-web-backend/04-streaming-sse.md`](../06-web-backend/04-streaming-sse.md)，Web 层不要复制本章拼装状态机。
 
 ## 学习目标（学完应能做到）
 

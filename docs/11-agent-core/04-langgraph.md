@@ -32,7 +32,7 @@
 
 ## 1. 为何用图而不是一层 for
 
-上一章手写 Agent 的核心是：
+前面的手写 Agent 章，其核心是：
 
 ```text
 for step in range(max_steps):
@@ -621,6 +621,38 @@ state["approval"] = "allow"
 state = run_until_wait_or_end(graph, state)  # 从 approve / exec_tool 续跑
 ```
 
+产品形态必须把「一次 HTTP 请求」与「一条可恢复线程」分开：
+
+```text
+POST /v1/threads
+  → {thread_id}
+
+POST /v1/threads/{thread_id}/runs
+  → 运行到 done / failed / waiting
+  → waiting 时返回 pending_approval（tool、参数摘要、decision_id）
+
+POST /v1/threads/{thread_id}/approvals/{decision_id}
+  Body: {"decision":"allow|deny","reason":"..."}
+  → 鉴权、校验 decision 仍 pending、原子写审批
+  → enqueue/resume(thread_id)，不要在审批 HTTP 内阻塞跑完整图
+
+GET /v1/threads/{thread_id}
+  → 当前 status、可展示的 pending approval、最后 checkpoint 版本
+```
+
+`thread_id` 是 checkpoint / 对话执行身份；`run_id` 可表示某次尝试，`decision_id` 唯一定位待审批动作。恢复时从持久化 checkpoint 读取**当前节点、图版本、pending_tool 与状态**，以乐观锁或唯一约束保证同一审批只能消费一次。批准 API 必须校验调用者、租户、审批范围和过期时间；`allow` 不是把未来所有同名工具永久放行。
+
+关键状态转移：
+
+```text
+running → waiting（checkpoint committed）
+waiting → running（审批 allow，恢复任务已领取）
+waiting → done/denied（审批 deny）
+waiting → expired/canceled（超时或用户取消）
+```
+
+服务端禁止在节点里调用 `input()`：它占住 worker、无法跨进程恢复、部署重启会丢等待者，也没有可靠的审批身份与审计。CLI `input()` 只能是本地演示，不能代表 HITL 产品接口。
+
 #### 跑一下（默认拒绝）
 
 ```python
@@ -650,6 +682,8 @@ assert state["pending_tool"] is None
 | 批准信息只存在内存 UI、不写 state | 恢复后不知道批的是哪次调用 |
 | 危险工具仍可从别的边绕过 approve | ACL 形同虚设 |
 | waiting 时继续自动跑下一节点 | 「人机」名存实亡 |
+| 只用 run_id、不保存 thread_id + checkpoint 版本 | 重启后无法确定从哪恢复 |
+| 审批 API 重复提交可重复执行 | 高风险工具被双执行；审批消费与工具幂等都要守卫 |
 
 #### 对照：同步 input vs 异步挂起
 
@@ -991,10 +1025,10 @@ assert final["step"] == 3  # llm, tools, llm
 
 ### 下一章
 
-[`05-agent-memory.md`](./05-agent-memory.md) —— 短期/长期记忆。
+[`06-multi-agent.md`](./06-multi-agent.md) —— 多 Agent 协作与何时不该用。
 
 ## 导航
 
 - 返回模块：[README](./README.md)
 - 上一章：[Agent Framework 概览](./03-agent-frameworks.md)
-- 下一章：[Agent Memory](./05-agent-memory.md)
+- 下一章：[Multi-Agent](./06-multi-agent.md)

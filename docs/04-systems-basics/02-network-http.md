@@ -11,6 +11,7 @@
 - **本章角色**：搞清 Agent 调 LLM / 工具 API 时，网络栈与 HTTP 在干什么；学会用「超时、状态码、重试、幂等」排障与设计边界。
 - **你的优势**：前端天天碰 HTTP；这里补服务端视角、Python 客户端写法，以及和 Agent 强相关的超时/重试决策。
 - **目标不是**：背全协议细节或成为网络工程师；够用、能对话、能排障即可。
+- **流式下一站**：本章只建立传输直觉；FastAPI SSE framing、心跳与断连取消见 [`06-web-backend/04-streaming-sse.md`](../06-web-backend/04-streaming-sse.md)。
 
 ## 学习目标（学完应能做到）
 
@@ -1047,6 +1048,8 @@ fake_should_retry_demo()
 ---
 
 ### 5.4 幂等键：给「创建类」工具用
+
+本节只保留 HTTP 传递直觉；Agent 工具的副作用分级、稳定 key、超时未知结果重放与补偿 canonical 见 [Tool Calling §6.6](../11-agent-core/01-tool-calling.md#66-canonical副作用幂等与重放)。
 
 #### 为什么需要？
 

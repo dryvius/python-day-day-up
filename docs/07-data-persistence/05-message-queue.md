@@ -396,6 +396,8 @@ except PoisonError:
 
 ## 3. 必掌握：至少一次投递与幂等
 
+工具副作用分级、idempotency key、未知结果重放与补偿的 canonical 见 [Tool Calling §6.6](../11-agent-core/01-tool-calling.md#66-canonical副作用幂等与重放)；本章只讨论队列投递与消费者为何必须调用那套机制。
+
 ### 3.1 投递语义地图
 
 #### 为什么不能幻想「正好一次」免费午餐？

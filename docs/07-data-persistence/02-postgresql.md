@@ -9,7 +9,7 @@
 
 - **模块目标**：掌握 SQL/ORM/缓存/队列的工程用法与取舍。
 - **本章角色**：认识生产常见关系库 PostgreSQL：类型、约束、本地启动、连接配置；并为 JSON 业务字段与迁移建立直觉。
-- **学习策略**：可用 Docker 启动；若环境受限，用 SQLite 练 SQL，但仍要读懂 PG 概念。
+- **学习策略**：本章 4.2～4.4 会先补齐启动 PostgreSQL 所需的最小 Docker 操作；无需等到模块 08。若环境受限，用 SQLite 练 SQL，但仍要读懂 PG 概念。
 - **和 Agent**：会话、消息、工具调用记录、知识库元数据，生产里多数落在 PG（或兼容方言）上；下一章 ORM 也会默认以 PG URL 为例。
 
 ## 学习目标
@@ -459,6 +459,7 @@ session_id UUID NOT NULL REFERENCES chat_sessions(id) ON DELETE CASCADE
 | `ON DELETE SET NULL` | 子外键置空（列需可空） |
 
 Agent 实务更常见：**软删除**（`deleted_at`）而不是物理级联删。
+完整的恢复窗、TTL、批量 purge 与向量索引同步见[数据生命周期](./06-data-lifecycle.md)。
 
 ### 3.5 `UNIQUE`：约束 vs 唯一索引
 
@@ -497,6 +498,11 @@ CREATE UNIQUE INDEX uniq_users_email ON users(email);
 ## 4. 必掌握：本地 / 容器启动
 
 目标：你的机器上有一个可连的 Postgres，并拿到连接串。
+
+> **前置说明**：这里把 Docker 只当作「可重复启动数据库的工具」。先掌握
+> `run / ps / logs / exec / stop / start / rm` 即可，不要求现在理解 Dockerfile
+> 或 Compose。完成模块 08 的 [Docker 与部署](../08-devops-architecture/02-docker-deploy.md)
+> 后，再回头补齐镜像构建、网络、数据卷与服务编排。
 
 ### 4.1 为什么优先 Docker？
 

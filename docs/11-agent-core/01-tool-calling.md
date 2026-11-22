@@ -974,6 +974,39 @@ GOOD_TOOL = TOOLS[0]  # 前面的 search
 | 失败 | 可操作的 error code | `"fail"` |
 | 副作用 | 幂等 / 人审 | 盲着重试 |
 
+### 6.6 Canonical：副作用、幂等与重放
+
+本节是仓库关于工具副作用可靠性的 canonical；HTTP、Queue、System Design 只链接这里，不各写一套。
+
+先按副作用分级，再决定重试：
+
+| 级别 | 例子 | 默认策略 |
+| --- | --- | --- |
+| S0 纯计算 | calculator、格式转换 | 可安全重算 |
+| S1 只读 I/O | search、get_order | 可有限重试；仍需超时与租户 ACL |
+| S2 可覆盖写 | 更新偏好、写同一终态 | 稳定幂等键 + 条件写/版本守卫 |
+| S3 外部不可逆 | 扣费、发信、创建工单 | 幂等键 + 人审/审计；未知结果不得换新 key 重试 |
+
+**Idempotency key 表示同一业务意图，不是同一次网络尝试。** 推荐由可信编排层生成并贯穿 Job、tool call 与下游；重试必须复用。服务端以 `(tenant, tool, key)` 原子记录状态与结果：同 key + 同参数返回首次结果；同 key + 不同参数应冲突拒绝，不能悄悄执行第二种动作。
+
+```text
+首次：reserve key → execute once → persist result → return
+重放：lookup same key → return persisted result（不再执行）
+冲突：same key + different args digest → idempotency_conflict
+```
+
+重试/回放与补偿的边界：
+
+1. **执行前明确失败**：可按策略有限重试。
+2. **超时导致结果未知**：先用同 key 查询/重放；禁止生成新 key 盲重试。
+3. **业务已成功、响应丢失**：同 key 应返回同一结果。
+4. **无法原子撤销的跨系统步骤**：用 saga/补偿动作显式修正；补偿本身也是副作用，也要幂等、授权和审计。
+5. **补偿不等于回滚**：邮件无法「没发过」，退款也不是删除扣款历史；产品状态要表达 `compensating/compensated/failed`。
+
+并行执行时，S2/S3 不仅要每次调用有 key，还要明确顺序依赖；不能靠 `gather` 猜事务语义。
+
+MCP 只改变发现/调用与 transport，不替代以上执行约束；选型见 [MCP 决策地图](../topics/mcp.md)。
+
 ---
 
 ## 7. 建议掌握：并行 tool_calls 与失败语义
@@ -1246,3 +1279,4 @@ class LLMClient(Protocol):
 - 上一模块桥：[Structured Output](../09-ai-llm/04-structured-output.md)
 - 下一章：[手写一个 Agent](./02-handwritten-agent.md)
 - 约定：[CONVENTIONS.md](../CONVENTIONS.md)
+- MCP 决策地图：[topics/mcp.md](../topics/mcp.md)

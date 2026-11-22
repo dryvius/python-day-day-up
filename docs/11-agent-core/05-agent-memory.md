@@ -11,6 +11,7 @@
 - **本章角色**：区分工作记忆 / 会话短期 / 长期记忆；管理会话状态；设计写入过滤与检索；防范记忆污染。
 - **和持久化**：短期可在进程内；长期落 DB/向量库（模块 07/10）。
 - **前置**：手写 Agent 的 `messages` / `trace`、工具环终止条件；RAG 章里「知识库检索」的直觉。
+- **上下文装配**：Memory 负责写入/检索边界；与 system、历史、RAG、tool result 的统一预算与截断由 [`09-ai-llm/05-context-packer.md`](../09-ai-llm/05-context-packer.md) 定义。
 - **你早已用过**：聊天产品里的「记住我的偏好」、IDE 里的会话历史——本章把它们拆成可工程化的三层。
 
 ## 学习目标（学完应能做到）
@@ -880,12 +881,12 @@ TTL/revoke → 保长期库可纠正、可过期
 
 ### 下一章
 
-[`06-multi-agent.md`](./06-multi-agent.md) —— 多 Agent 协作与何时不该用。
+[`03-agent-frameworks.md`](./03-agent-frameworks.md) —— 带着工具环与记忆边界，再判断框架替你封装了什么。
 
 ## 导航
 
 - 返回模块：[README](./README.md)
-- 上一章：[LangGraph 与工作流](./04-langgraph.md)
-- 下一章：[Multi-Agent](./06-multi-agent.md)
+- 上一章（推荐学习顺序）：[手写一个 Agent](./02-handwritten-agent.md)
+- 下一章（推荐学习顺序）：[Agent Framework 概览](./03-agent-frameworks.md)
 - 专题：[记忆工程进阶](../topics/memory-engineering.md)
 - 可跑代码：[`playground/11-agent-core/memory/`](../../playground/11-agent-core/memory/)

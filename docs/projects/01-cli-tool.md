@@ -1,10 +1,11 @@
 # Project 1：Python CLI 工具
 
-> 状态：`已完成实战说明`  
-> 建议时机：完成模块 01～03 后  
-> 建议工时：6～12 小时  
-> 推荐目录：`playground/projects/01-cli-tool/`  
+> 状态：`实战说明 + 参考实现已齐`（仓库参考实现：[`playground/projects/01-cli-tool/`](../../playground/projects/01-cli-tool/)）
+> 建议时机：完成模块 01～03 后
+> 建议工时：6～12 小时
+> 推荐目录：`playground/projects/01-cli-tool/`
 > 运行环境：Python ≥ 3.11（见 [`../CONVENTIONS.md`](../CONVENTIONS.md)）
+> 说明：下文里程碑 / 验收中的 `[ ]` 是**学习者自检清单**，不因仓库已有参考实现而预先勾选。
 
 ## 项目目标
 
@@ -12,8 +13,8 @@
 
 建议选题（三选一或自拟等价难度）：
 
-1. **文档扫描器**：统计目录下 `.md`/`.py` 行数、空行、按扩展名汇总  
-2. **消息历史截断器**：读 JSONL 对话，按策略截断后写出  
+1. **文档扫描器**：统计目录下 `.md`/`.py` 行数、空行、按扩展名汇总
+2. **消息历史截断器**：读 JSONL 对话，按策略截断后写出
 3. **简单待办 CLI**：本地 JSON 文件增删改查
 
 下文以「文档扫描器」为主线描述；换选题时对照同一里程碑即可。
@@ -32,23 +33,25 @@
 
 ### 功能
 
-1. 子命令或参数：`scan <path> [--ext md,py] [--json]`  
-2. 递归遍历目录，跳过 `.venv` / `__pycache__` / `.git`  
-3. 输出：人类可读表，或 `--json` 结构化结果  
-4. 路径不存在 / 无权限 → 非 0 退出码 + 清晰错误信息  
+1. 子命令或参数：`scan <path> [--ext md,py] [--json]`
+2. 递归遍历目录，跳过 `.venv` / `__pycache__` / `.git`
+3. 输出：人类可读表，或 `--json` 结构化结果
+4. 路径不存在 / 无权限 → 非 0 退出码 + 清晰错误信息
 
 ### 非功能
 
-- Python ≥ 3.11  
-- 核心逻辑可单测（不依赖真实巨大目录，可用 `tmp_path`）  
-- 有 `README`：安装与示例命令  
-- 日志：默认 WARNING，`-v` 升到 INFO  
+- Python ≥ 3.11
+- 核心逻辑可单测（不依赖真实巨大目录，可用 `tmp_path`）
+- 有 `README`：安装与示例命令
+- 日志：默认 WARNING，`-v` 升到 INFO
 
 ## 建议目录
 
+学习者从零搭建时可用下面的 `app/` 脚手架；仓库参考实现包名为 `cli_scanner`，布局可不同，以参考实现目录为准。
+
 ```text
 playground/projects/01-cli-tool/
-├── app/
+├── app/                     # 学习者脚手架示例；参考实现为 cli_scanner/
 │   ├── __init__.py
 │   ├── __main__.py          # python -m app
 │   ├── cli.py               # argparse / typer
@@ -63,28 +66,33 @@ playground/projects/01-cli-tool/
 
 ## 起步建议（第一天）
 
-1. 建目录 + `pyproject.toml`（包名 `app`，脚本入口可选）  
-2. 先写 `scanner.scan_path(path) -> dict`，用 `pytest` + `tmp_path` 造 2～3 个文件跑绿  
-3. 再挂 `cli.py` / `__main__.py`；最后才加 `-v` 与 `pip install -e .`  
+1. 建目录 + `pyproject.toml`（包名自定，如 `app` 或 `cli_scanner`；脚本入口可选）
+2. 先写 `scanner.scan_path(path) -> dict`，用 `pytest` + `tmp_path` 造 2～3 个文件跑绿
+3. 再挂 `cli.py` / `__main__.py`；最后才加 `-v` 与 `pip install -e .`
 
 必读章节（细则回文档，不在这里重讲）：
 
-- [项目结构](../03-engineering/01-project-structure.md)  
-- [测试](../03-engineering/03-testing.md)  
-- [Logging](../03-engineering/04-logging.md)  
+- [项目结构](../03-engineering/01-project-structure.md)
+- [测试](../03-engineering/03-testing.md)
+- [Logging](../03-engineering/04-logging.md)
+- [CLI 入口与参数解析](../03-engineering/05-cli-entrypoints.md)
+- [Git 协作与 CI 门禁](../03-engineering/06-git-ci.md)
+- [调试与故障定位](../03-engineering/07-debugging.md)
 
 ## 里程碑
 
-- [ ] **M1**：`scanner.scan_path` 对临时目录返回正确计数；`pytest` 绿  
-- [ ] **M2**：CLI 可跑；`--json`；错误路径退出码 ≠ 0  
-- [ ] **M3**：`pyproject` 可 `pip install -e .`；`-v` 日志；README 三节（安装/用法/开发）  
+- [ ] **M1**：`scanner.scan_path` 对临时目录返回正确计数；`pytest` 绿
+- [ ] **M2**：CLI 可跑；`--json`；错误路径退出码 ≠ 0
+- [ ] **M3**：`pyproject` 可 `pip install -e .`；`-v` 日志；README 三节（安装/用法/开发）
 
 ## 验收标准
 
-- [ ] 他人按 README 能在干净 venv 安装并跑通一条示例  
-- [ ] 至少 3 个 pytest（正常扫描、空目录、缺失路径）  
-- [ ] 业务逻辑不写在 `cli.py` 里堆成一团  
-- [ ] 无密钥；无提交 `.venv`  
+- [ ] 他人按 README 能在干净 venv 安装并跑通一条示例
+- [ ] 至少 3 个 pytest（正常扫描、空目录、缺失路径）
+- [ ] 业务逻辑不写在 `cli.py` 里堆成一团
+- [ ] 无密钥；无提交 `.venv`
+
+参考实现：[`../../playground/projects/01-cli-tool/`](../../playground/projects/01-cli-tool/)
 
 ## 常见易错
 
@@ -98,9 +106,9 @@ playground/projects/01-cli-tool/
 
 ## 延伸挑战
 
-- 用 `rich` 表格扩展输出  
-- 并行扫描大目录（`ProcessPoolExecutor`，注意模块 04 GIL 边界）  
-- 打包发布到 TestPyPI（了解即可）  
+- 用 `rich` 表格扩展输出
+- 并行扫描大目录（`ProcessPoolExecutor`，注意模块 04 GIL 边界）
+- 打包发布到 TestPyPI（了解即可）
 
 ## 导航
 

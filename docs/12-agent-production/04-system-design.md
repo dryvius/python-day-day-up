@@ -661,6 +661,27 @@ def clip_tool_result(text: str, max_chars: int = 2000) -> str:
     return text[: max_chars - 20] + "\n...[truncated]..."
 ```
 
+#### 多租户配额必须硬拒绝
+
+配额判断属于认证后的服务端边界，不信客户端传入的 `tenant_id`。先由 [Auth](../06-web-backend/03-auth.md) 得到 principal/tenant，再用 [Redis](../07-data-persistence/04-redis-cache.md) 原子扣减短周期额度；日/月账本与计费真源应持久化，Redis 不是唯一账本。
+
+```text
+authenticate → resolve tenant → atomic reserve quota
+  ├─ success → 执行 run；结算实际 usage / 退回未使用预留
+  └─ exhausted → 硬拒绝（429 或业务 403），不调用 LLM、不入昂贵 Job
+```
+
+硬拒绝至少覆盖：
+
+- 请求速率、同时运行的 Job、估算 token/金额、存储等不同维度；
+- 原子 `INCR`/Lua/事务式 reserve，避免并发先查后扣导致超卖；
+- key 必含可信 `tenant_id + quota_kind + window`，并设置 TTL；缓存键不可跨租户；
+- 队列入口与 Worker **都校验**：入口防堆积，Worker 防旧消息/重投绕过；同一 Job 重投不得重复扣配额；
+- Redis 故障采用显式 fail-closed 或受限降级额度，不能悄悄变成 unlimited；
+- 响应提供稳定错误码、`Retry-After`/重置时间与 `run_id`，日志只记额度摘要。
+
+配额不是 UI 提示，也不是「超过后照跑但告警」。系统设计评审必须写清拒绝状态码、原子性、故障策略、退款/结算和管理员应急额度。
+
 与评测章对齐的发版门禁心智：
 
 ```text
@@ -892,6 +913,7 @@ SLA：同步问答 P95 < 8s；复杂查单允许异步 2min
 - [ ] 降级层级 1～5 有对应用户话术与归属  
 - [ ] 熔断 / 超时 / 重试默认值已写入决策表  
 - [ ] 幂等：入队与工具副作用策略已说明  
+- [ ] 副作用分级、重放与补偿引用 [Tool Calling canonical](../11-agent-core/01-tool-calling.md#66-canonical副作用幂等与重放)，本章不另造规则
 - [ ] RAG 空命中不编造；权限不因空结果而放宽  
 - [ ] 人工兜底 / 工单入口（若产品需要）  
 
@@ -906,6 +928,7 @@ SLA：同步问答 P95 < 8s；复杂查单允许异步 2min
 #### 成本与演进
 
 - [ ] 模型路由 / 缓存 / 截断 / 配额策略至少各有一项  
+- [ ] 租户配额在服务端原子预留并硬拒绝；Auth 身份源与 Redis 故障策略明确
 - [ ] 预算告警接收人明确  
 - [ ] 平台化阶段与「现在不做什么」写清楚  
 - [ ] 3 个月演进与验证信号可检查  

@@ -1,6 +1,6 @@
 # 模块 06-web-backend：Web 后端
 
-> 状态：`三章正文与练习已全部完成` · 预计周期：2 周
+> 状态：`四章正文与练习已全部完成` · 建议周期：2～3 周
 
 ## 模块目标
 
@@ -15,6 +15,7 @@ Agent 常以服务形式对外提供能力，也要调用其他 API。FastAPI + 
 1. [Web 框架原理](./01-web-framework-principles.md) · [练习](../../exercises/06-web-backend/01-web-framework-principles.md)
 2. [FastAPI + Pydantic](./02-fastapi-pydantic.md) · [练习](../../exercises/06-web-backend/02-fastapi-pydantic.md)
 3. [认证与授权](./03-auth.md) · [练习](../../exercises/06-web-backend/03-auth.md)
+4. [StreamingResponse 与 SSE](./04-streaming-sse.md) · [练习](../../exercises/06-web-backend/04-streaming-sse.md)
 
 ## 建议学习方式
 
@@ -22,6 +23,7 @@ Agent 常以服务形式对外提供能力，也要调用其他 API。FastAPI + 
 2. 第二章请真实跑起 uvicorn，用 `/docs` 调试
 3. 第三章把 API Key 加到你的 `/v1/agent/run` 上，形成最小可分享服务雏形
 4. 可与总览中的 Project 2（FastAPI Todo）结合；先自己写再对照文档
+5. Project 3 前完成第四章，掌握流式生命周期、心跳与断连取消
 
 ## 模块自检
 
@@ -30,6 +32,7 @@ Agent 常以服务形式对外提供能力，也要调用其他 API。FastAPI + 
 - [ ] 能用 Depends 做配置与 API Key 鉴权
 - [ ] 能区分认证/授权与 401/403
 - [ ] 清楚异步路由中不能阻塞
+- [ ] 能正确输出 SSE，并处理心跳、错误和客户端断连
 
 ## 导航
 

@@ -2,7 +2,7 @@
 
 > 所属模块：`11-agent-core` · Agent 核心开发  
 > 状态：`已完成正文`  
-> 建议学时：3～5 小时（建议对照上一章手写 Agent，把「框架替你藏了哪一层」标在纸上）  
+> 建议学时：3～5 小时（建议对照前置的手写 Agent，把「框架替你藏了哪一层」标在纸上）
 > 对应练习：[`exercises/11-agent-core/03-agent-frameworks.md`](../../exercises/11-agent-core/03-agent-frameworks.md)
 
 ## 本章定位
@@ -10,7 +10,7 @@
 - **模块目标**：理解 Agent 本质，能手写并使用框架构建 Agent。
 - **本章角色**：理解框架解决什么、何时不用；建立读源码切入点与选型地图。
 - **原则**：框架是加速器，不是理解的替代品。先手写循环再用框架。
-- **前置**：上一章的 tool-loop、状态机、`max_steps`、轨迹与 FakeLLM；下一章会用「图」把分支与 checkpoint 做细。
+- **前置**：手写 Agent 的 tool-loop、状态机、`max_steps`、轨迹与 FakeLLM，以及 Memory 章的状态边界；下一章会用「图」把分支与 checkpoint 做细。
 - **一句话**：框架帮你少写胶水；产品逻辑、权限、评测、成本、失败策略仍是你的。
 
 ## 学习目标（学完应能做到）
@@ -39,7 +39,7 @@
 
 #### 为什么不能永远只靠手写 for 循环？
 
-上一章你已经能手写：
+前置章节里你已经能手写：
 
 ```text
 messages → LLM(+tools) → 有 tool_calls？→ 执行 → 写回 → 再调 LLM → …
@@ -369,7 +369,7 @@ trace / span / run_id
 
 ### 3.3 示例：对照手写实现的「寻宝」流程
 
-假设你上一章有：
+假设你在手写 Agent 章已有：
 
 ```python
 for step in range(1, self.max_steps + 1):
@@ -590,7 +590,7 @@ C. 中间态         —— 自研 loop + 只借用一层（消息类型 / traci
 - 团队更熟业务代码，不熟某框架方言
 - 需要 FakeLLM / 契约测试极度稳定（夹具自己写更干净）
 
-薄封装最小集合（对照上一章）：
+薄封装最小集合（对照手写 Agent 章）：
 
 ```text
 Agent.run / max_steps / 重复调用熔断
@@ -760,5 +760,5 @@ ACL 在工具执行前（不要只靠提示词）
 ## 导航
 
 - 返回模块：[README](./README.md)
-- 上一章：[手写一个 Agent](./02-handwritten-agent.md)
+- 上一章（推荐学习顺序）：[Agent Memory](./05-agent-memory.md)
 - 下一章：[LangGraph 与工作流](./04-langgraph.md)

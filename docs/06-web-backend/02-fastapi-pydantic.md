@@ -9,6 +9,7 @@
 ## 本章定位
 
 - **模块目标**：能独立搭建并理解后端 API 服务。
+- **流式响应**：本章聚焦 JSON API；`StreamingResponse`、SSE framing、心跳与断连取消集中见 [`04-streaming-sse.md`](./04-streaming-sse.md)。
 - **本章角色**：用 FastAPI 真正写出可用的 JSON API；用 Pydantic 做请求/响应校验——这也是 Agent 服务化的主工具链。
 - **前置**：上一章的请求生命周期、路由/中间件、同步 vs 异步处理；HTTP 基础（模块 04）、asyncio（模块 05）。
 - **你的优势**：若写过 Express / Nest / 前端 `fetch` + TypeScript 类型，心智模型几乎一一对应；差异主要在「类型注解驱动路由与文档」。

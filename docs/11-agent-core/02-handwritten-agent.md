@@ -13,7 +13,7 @@
 - **价值**：框架换代你也不慌——循环本质相同。
 - **产出**：可单测的 `Agent.run` + FakeLLM。
 - **前置**：[`01-tool-calling.md`](./01-tool-calling.md) 的工具定义、`run_tool_call`、终止条件。
-- **下一座桥**：[`03-agent-frameworks.md`](./03-agent-frameworks.md) —— 何时引入框架、如何对照源码找「等价物」。
+- **下一座桥**：[`05-agent-memory.md`](./05-agent-memory.md) —— 先把会话状态、长期写入与污染边界讲清楚。
 
 ## 学习目标（学完应能做到）
 
@@ -29,7 +29,7 @@
 |------|------|----------|
 | **必掌握** | tool loop、状态机、最小实现、终止条件 | 能手写跑通并测 |
 | **建议掌握** | 错误恢复、FakeLLM、轨迹 | 更稳、可测 |
-| **了解即可** | 规划算法变体 | 扫盲；下一章图编排再展开 |
+| **了解即可** | 规划算法变体 | 扫盲；后续图编排章再展开 |
 
 ---
 
@@ -877,7 +877,7 @@ print(agent.run("请搜索爆炸新闻"))
 
 ## 7. 了解即可：规划变体
 
-先把 tool loop 做稳，再在「计划节点」上扩展（下一章图编排更合适）。
+先把 tool loop 做稳，再在「计划节点」上扩展（后续图编排章更合适）。
 
 ### 7.1 为什么现在只扫盲？
 
@@ -911,7 +911,7 @@ IDLE → PLAN → CALLING_LLM → (TOOLS ↔ LLM)* → REFLECT → DONE
 2. 失败是重计划还是重试当前步？  
 3. 预算怎么算？（计划轮 + 执行轮 + 反思轮都吃 `max_steps` / 钱）
 
-下一章读框架源码时，对照你的手写实现逐项找「等价物」，比通读文档更快。图编排见 [`04-langgraph.md`](./04-langgraph.md)。
+完成 Memory 章后再读框架源码，对照你的手写实现逐项找「等价物」，比通读文档更快。图编排见 [`04-langgraph.md`](./04-langgraph.md)。
 
 ### 7.4 易错点（扫盲级）
 
@@ -959,12 +959,12 @@ IDLE → PLAN → CALLING_LLM → (TOOLS ↔ LLM)* → REFLECT → DONE
 
 ### 下一章
 
-[`03-agent-frameworks.md`](./03-agent-frameworks.md) —— 何时引入框架、如何读源码。
+[`05-agent-memory.md`](./05-agent-memory.md) —— 先把 messages、会话状态与长期写入边界讲清，再判断框架该替你管理什么。
 
 ## 导航
 
 - 返回模块：[README](./README.md)
 - 上一章：[Tool Calling](./01-tool-calling.md)
-- 下一章：[Agent Framework 概览](./03-agent-frameworks.md)
+- 下一章（推荐学习顺序）：[Agent Memory](./05-agent-memory.md)
 - 约定：[CONVENTIONS.md](../CONVENTIONS.md)
 - 实战：[Project 5：Tool Agent](../projects/05-tool-agent.md)

@@ -100,14 +100,18 @@ playground/07-data-persistence/03-orm/
 
 ---
 
-### B4. 迁移认知（书面）
+### B4. Alembic 动手迁移
 
-解释：
+在 B2/B3 目录完成真实迁移：
 
-1. 为何生产环境不能只靠 `create_all`？  
-2. 迁移工具（如 Alembic）主要解决什么问题？
+1. 安装 Alembic，执行 `alembic init migrations`。
+2. 配置 `target_metadata = Base.metadata`；URL 从 `DATABASE_URL` 读取并保留 SQLite 本地默认值。
+3. 生成首个迁移，审查 `upgrade()` / `downgrade()`，执行 `upgrade head`。
+4. 给 `Message` 新增 `status` 字段，再生成第二个迁移；不要手工改 SQLite 表冒充迁移。
+5. 执行 `upgrade head → downgrade -1 → upgrade head`，每一步用 `alembic current` 或检查器确认版本/字段。
+6. 在 `migration_notes.md` 记录：autogenerate 生成了什么、你审查了什么、生产为何不能让每个 Web worker 自行迁移。
 
-**验收**：提到已有数据表结构演进、可重复/可审阅的变更脚本。
+**验收**：提交 `alembic.ini`、`migrations/`、两个 revision 与笔记；新建空库能从零 `upgrade head`；降级后 `status` 消失，再升级后恢复。
 
 ---
 
@@ -307,10 +311,37 @@ if __name__ == "__main__":
 
 ### B4 思路 + 参考答案
 
-**参考答案**：
+关键配置：
 
-1. `create_all` 主要「没有则创建」，不会安全地处理「改列/删列/改约束/数据回填」；生产库有数据，硬改会丢数据或不一致。  
-2. 迁移工具把 schema 变更做成可版本化、可审查、可重复执行的脚本，支持升级/（部分）降级与多环境对齐。
+```python
+# migrations/env.py（保留 Alembic 生成的 online/offline 函数）
+import os
+
+from alembic import context
+from models import Base
+
+config = context.config
+config.set_main_option(
+    "sqlalchemy.url",
+    os.environ.get("DATABASE_URL", config.get_main_option("sqlalchemy.url")),
+)
+target_metadata = Base.metadata
+```
+
+建议命令记录：
+
+```bash
+alembic revision --autogenerate -m "create messages"
+alembic upgrade head
+# 修改模型，新增 status
+alembic revision --autogenerate -m "add message status"
+alembic upgrade head
+alembic downgrade -1
+alembic current
+alembic upgrade head
+```
+
+审查重点：`status` 是否误导致其它列被 drop；非空字段对旧行是否有默认值/回填；downgrade 是否只撤销本次字段。`create_all` 不能版本化演进已有表；Alembic 脚本才可审查、复放并对齐环境。部署时由单一 release job 迁移，再滚动启动应用副本。
 
 ---
 

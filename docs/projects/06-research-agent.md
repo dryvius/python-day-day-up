@@ -1,10 +1,11 @@
 # Project 6：Research Agent
 
-> 状态：`已完成实战说明`  
-> 建议时机：完成模块 11～12 后  
-> 建议工时：16～30 小时  
-> 推荐目录：`playground/projects/06-research-agent/`  
+> 状态：`实战说明 + 参考实现已齐`（仓库参考实现：[`playground/projects/06-research-agent/`](../../playground/projects/06-research-agent/)）
+> 建议时机：完成模块 11～12 后
+> 建议工时：16～30 小时
+> 推荐目录：`playground/projects/06-research-agent/`
 > 运行环境：Python ≥ 3.11 · FakeLLM / 刻意简化见 [`../CONVENTIONS.md`](../CONVENTIONS.md)
+> 说明：下文里程碑 / 验收中的 `[ ]` 是**学习者自检清单**，不因仓库已有参考实现而预先勾选。
 
 ## 项目目标
 
@@ -23,20 +24,20 @@
 
 ### 功能
 
-1. 用户给研究主题 → Agent 分解步骤（可写死计划模板 + LLM 填空）  
-2. 工具：`search_kb`（可接 Project 4）、`fetch_url`（建议 mock）、`write_note`、`finalize_report`  
-3. 输出 Markdown 报告：**结论 + 引用列表**；材料不足要写明缺口  
-4. `POST /v1/jobs` 入队，`GET /v1/jobs/{id}` 查状态（同步短路径可保留作调试）  
+1. 用户给研究主题 → Agent 分解步骤（可写死计划模板 + LLM 填空）
+2. 工具：`search_kb`（可接 Project 4）、`fetch_url`（建议 mock）、`write_note`、`finalize_report`
+3. 输出 Markdown 报告：**结论 + 引用列表**；材料不足要写明缺口
+4. `POST /v1/jobs` 入队，`GET /v1/jobs/{id}` 查状态（同步短路径可保留作调试）
 
 ### 非功能
 
-- FakeLLM + mock 工具下可全链路演示；`complete` → **assistant dict**  
-- smoke 评测集 ≥5（含：应拒答、应引用、禁止 shell）；**强制**对齐 [`playground/12-agent-production/evaluation/`](../../playground/12-agent-production/evaluation/) 的 harness 约定  
-- Notes/长期记忆写入必须过 `should_write_long_term`（可复用 [`playground/11-agent-core/memory/`](../../playground/11-agent-core/memory/)）  
-- 结构化日志带 `trace_id` / `job_id`；字段允许列表，**默认不记完整 messages / API Key**  
-- 危险工具默认不注册；ACL 默认拒绝（**含参数级**：URL host、路径前缀）  
-- 成本控制：`max_steps`、工具超时、可选预算计数  
-- **长任务上队列**；勿用 FastAPI `BackgroundTasks` 扛研究 Job（CONVENTIONS）  
+- FakeLLM + mock 工具下可全链路演示；`complete` → **assistant dict**
+- smoke 评测集 ≥5（含：应拒答、应引用、禁止 shell）；**强制**对齐 [`playground/12-agent-production/evaluation/`](../../playground/12-agent-production/evaluation/) 的 harness 约定
+- Notes/长期记忆写入必须过 `should_write_long_term`（可复用 [`playground/11-agent-core/memory/`](../../playground/11-agent-core/memory/)）
+- 结构化日志带 `trace_id` / `job_id`；字段允许列表，**默认不记完整 messages / API Key**
+- 危险工具默认不注册；ACL 默认拒绝（**含参数级**：URL host、路径前缀）
+- 成本控制：`max_steps`、工具超时、可选预算计数
+- **长任务上队列**；勿用 FastAPI `BackgroundTasks` 扛研究 Job（CONVENTIONS）
 
 ## 建议架构
 
@@ -56,9 +57,11 @@ Client → FastAPI
 
 ## 建议目录
 
+学习者脚手架可用 `app/`；仓库参考实现包名为 `research_agent`，布局可不同。
+
 ```text
 playground/projects/06-research-agent/
-├── app/
+├── app/                     # 学习者脚手架示例；参考实现为 research_agent/
 │   ├── api/
 │   ├── worker/
 │   ├── agent/
@@ -79,40 +82,44 @@ playground/projects/06-research-agent/
 
 ## 起步建议（第一天）
 
-1. **先同步 Fake 全链路**：主题 → 工具 → 带 citations（或缺口）的短报告  
-2. 再抽 Job：内存队列 + `job_id` 状态机；给每条日志打上 `trace_id`  
-3. 接入模块 12 harness（`cases.jsonl` + baseline）；最后补 ACL / 记忆拒写单测  
+1. **先同步 Fake 全链路**：主题 → 工具 → 带 citations（或缺口）的短报告
+2. 再抽 Job：内存队列 + `job_id` 状态机；给每条日志打上 `trace_id`
+3. 接入模块 12 harness（`cases.jsonl` + baseline）；最后补 ACL / 记忆拒写单测
 
 必读章节：
 
-- [Evaluation](../12-agent-production/01-evaluation.md)  
-- [Observability](../12-agent-production/02-observability.md)  
-- [Security](../12-agent-production/03-security.md)  
-- [系统设计](../12-agent-production/04-system-design.md)  
-- 前置项目：[Tool Agent](./05-tool-agent.md) · [RAG](./04-rag-kb.md)  
+- [Evaluation](../12-agent-production/01-evaluation.md)
+- [Observability](../12-agent-production/02-observability.md)
+- [Security](../12-agent-production/03-security.md)
+- [系统设计](../12-agent-production/04-system-design.md)
+- 前置项目：[Tool Agent](./05-tool-agent.md) · [RAG](./04-rag-kb.md)
 
 ## 里程碑
 
-- [ ] **M1**：同步 Agent 出带引用的短报告（Fake 全链路）  
-- [ ] **M2**：Job 队列 + 状态查询；trace_id（非 BackgroundTasks 冒充）  
-- [ ] **M3**：评测回归脚本（`--write-baseline` / 改坏见 regressions）；ACL（名+参）；记忆污染单测  
-- [ ] **M4**（可选）：真 LLM + 真检索；基线对比  
+- [x] **M1**：同步 Agent 出带引用的短报告（Fake 全链路）
+- [x] **M2**：Job 队列 + 状态查询；trace_id（非 BackgroundTasks 冒充）
+- [x] **M3**：评测回归脚本（`--write-baseline` / 改坏见 regressions）；ACL（名+参）；记忆污染单测
+- [ ] **M4**（可选）：真 LLM + 真检索；基线对比
 
 ## 验收标准
 
-- [ ] Fake 模式下：创建 Job → 轮询 → succeeded，报告含 citations 或明确缺口  
-- [ ] `run_eval.py` 对齐模块 12 最小 harness（cases.jsonl + baseline 对比）；改坏 prompt 能出现 regressions  
-- [ ] 未授权工具无法执行（有测试）；注入内容不得写入长期记忆（有测试）  
-- [ ] 日志遵守字段允许列表；README 含架构图、环境变量、演示脚本  
+- [x] Fake 模式下：创建 Job → 轮询 → succeeded，报告含 citations 或明确缺口
+- [x] `run_eval.py` 对齐模块 12 最小 harness（cases.jsonl + baseline 对比）；改坏 prompt 能出现 regressions
+- [x] 未授权工具无法执行（有测试）；注入内容不得写入长期记忆（有测试）
+- [x] 日志遵守字段允许列表；README 含架构图、环境变量、演示脚本
+- [x] **HITL**：高风险/`finalize_report` 必须停在 `pending_human`；`POST /v1/jobs/{id}/approve` 仅批准当前断点并恢复入队（有轮询测试）
+- [x] **Budget**：`max_steps`、工具调用次数和估算单位均为硬顶；越界进入明确的 `budget_exceeded`，并指出触发维度
+- [x] **Lifecycle**：Job TTL/过期清理、单 Job 撤销、命名空间撤销和 Memory 清理均可执行；跨命名空间读取返回未找到
+- [x] **Idempotency**：同 namespace + key + payload 返回原 Job；同键不同 payload 返回冲突，不重复入队
 
 ## 设计检查清单（对照模块 12）
 
-- [ ] 同步/异步边界清晰（短问答 vs Job）  
-- [ ] 超时 / 重试 / 幂等（job_id）  
-- [ ] 日志脱敏；不默认倾倒 messages  
-- [ ] 评测集进仓库（脱敏）；Fake CI 可绿  
-- [ ] 降级与人工兜底说明  
-- [ ] 成本：`max_steps` / 超时 / 可选预算  
+- [x] 同步/异步边界清晰（短问答 vs Job）
+- [x] TTL / 撤销 / 幂等（namespace + idempotency key）
+- [x] 日志脱敏；不默认倾倒 messages
+- [x] 评测集进仓库（脱敏）；Fake CI 可绿
+- [x] 高风险 finalize 的人工审批断点与恢复
+- [x] 成本：`max_steps` / 工具次数 / 估算单位硬预算
 
 ## 常见易错
 
@@ -128,9 +135,9 @@ playground/projects/06-research-agent/
 
 ## 延伸挑战
 
-- Human-in-the-loop：finalize 前确认  
-- 将微型图执行器用于「检索失败 → 改写再检索」  
-- 简单前端展示 Job 进度  
+- Human-in-the-loop：finalize 前确认
+- 将微型图执行器用于「检索失败 → 改写再检索」
+- 简单前端展示 Job 进度
 
 ## 导航
 

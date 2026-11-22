@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-daydayup-cli-scanner"
+version = "1.0.0"
+description = "A small, installable source file statistics CLI."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+docscan = "cli_scanner.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["cli_scanner*"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

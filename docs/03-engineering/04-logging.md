@@ -251,6 +251,8 @@ def risky_parse(raw: str) -> dict:
 
 `logger.exception(...)` **必须在 except 块内使用**（或确保当前有异常上下文）；它等价于 ERROR 级别并自动带上 traceback。
 
+本章负责“如何记录异常现场”；traceback 的系统阅读方法、`breakpoint()`/pdb、IDE，以及异步/FastAPI 定位，以 [`07-debugging.md`](./07-debugging.md) 为 canonical。
+
 #### 跑一下
 
 ```python
@@ -1180,19 +1182,18 @@ formatter：长什么样（时间、级别、模块、消息）
 字段     ：事件名 + run_id/tool/latency…（可检索）
 ```
 
-### 模块 03 收官
+### 下一章
 
-工程化四件套已齐：
+工程化基础已经覆盖结构、依赖、测试与日志；下一步按完整闭环推进：
 
 ```text
-结构 → 依赖/环境 → 测试 → 日志
+结构 → 依赖/环境 → 测试 → 日志 → CLI → Git/CI → 调试 → Project 1
 ```
 
-下一模块：[`../04-systems-basics/README.md`](../04-systems-basics/README.md)  
-计算机与服务端基础（OS / 网络 / 并发 / DSA 精要）。
+下一章：[`05-cli-entrypoints.md`](./05-cli-entrypoints.md)。学完 CLI、Git/CI 与调试后再进入 Project 1，把模块 01～03 收成可安装、可测试的命令行工具。
 
 ## 导航
 
 - 返回模块：[README](./README.md)
 - 上一章：[测试（pytest）](./03-testing.md)
-- 下一模块：[计算机与服务端基础](../04-systems-basics/README.md)
+- 下一章：[CLI 入口与参数解析](./05-cli-entrypoints.md)

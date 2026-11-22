@@ -1,0 +1,65 @@
+name: Projects CI
+
+on:
+  push:
+    paths:
+      - "playground/projects/**"
+      - ".github/workflows/projects-ci.yml"
+  pull_request:
+    paths:
+      - "playground/projects/**"
+      - ".github/workflows/projects-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - playground/projects/01-cli-tool
+          - playground/projects/02-fastapi-todo
+          - playground/projects/03-ai-chat
+          - playground/projects/04-rag-kb
+          - playground/projects/05-tool-agent
+          - playground/projects/06-research-agent
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ${{ matrix.project }}/pyproject.toml
+
+      - name: Install project
+        run: python -m pip install --upgrade pip && python -m pip install -e '.[dev]'
+
+      - name: Run tests
+        env:
+          APP_API_KEY: ci-development-key
+        run: pytest
+
+      - name: Run RAG evaluation
+        if: matrix.project == 'playground/projects/04-rag-kb'
+        run: python scripts/run_eval.py
+
+      - name: Run Tool Agent evaluation
+        if: matrix.project == 'playground/projects/05-tool-agent'
+        run: python eval/run_eval.py
+
+      - name: Run Research Agent evaluation
+        if: matrix.project == 'playground/projects/06-research-agent'
+        run: python eval/run_eval.py

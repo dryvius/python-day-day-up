@@ -1,6 +1,6 @@
 # 模块 09-ai-llm：AI / LLM 基础与认知地图
 
-> 状态：`四章正文与练习已全部完成` · 预计周期：1～2 周
+> 状态：`五章正文与练习已全部完成` · 建议周期：2.5～3.5 周
 
 ## 模块目标
 
@@ -16,6 +16,7 @@ Agent 建立在 LLM 能力之上；先统一术语与心智模型，再进入 RA
 2. [LLM API 实战](./02-llm-api.md) · [练习](../../exercises/09-ai-llm/02-llm-api.md)
 3. [Prompt Engineering](./03-prompt-engineering.md) · [练习](../../exercises/09-ai-llm/03-prompt-engineering.md)
 4. [Structured Output](./04-structured-output.md) · [练习](../../exercises/09-ai-llm/04-structured-output.md)
+5. [Context Packer：优先级、预算与截断](./05-context-packer.md) · [练习](../../exercises/09-ai-llm/05-context-packer.md)
 
 ## 建议学习方式
 
@@ -23,6 +24,7 @@ Agent 建立在 LLM 能力之上；先统一术语与心智模型，再进入 RA
 2. API 章用 FakeClient / EchoLLM 也能完成主线；有 Key 再打真调用
 3. 提示词请版本化进文件，不要只活在聊天记录里
 4. 结构化输出是 Tool Calling 的桥，务必做通 Pydantic 校验；先自己写再对照文档
+5. 用 Context Packer 把来源优先级与截断从路由/Agent 中抽成可测试契约
 
 ## 模块自检
 
@@ -30,6 +32,7 @@ Agent 建立在 LLM 能力之上；先统一术语与心智模型，再进入 RA
 - [ ] 能封装 Chat 调用并处理重试边界
 - [ ] 能写出可维护的 system/few-shot 模板
 - [ ] 能把模型输出可靠解析为 Pydantic 模型
+- [ ] 能按优先级和预算装配 system、历史、Memory、RAG 与工具结果
 
 ## 导航
 

@@ -210,6 +210,20 @@ def load_latest(path: Path, thread_id: str) -> dict | None: ...
 
 ---
 
+### A3. HITL 产品 API（推荐）
+
+在 A1/A2 上设计并用函数或最小 HTTP 伪实现表达：
+
+1. `thread_id` 创建与查询；checkpoint 同时保存当前节点、图版本和版本号。
+2. run 执行到 `waiting` 后返回 `decision_id` 与脱敏后的待审批参数。
+3. `approve(thread_id, decision_id, decision)` 校验租户/审批者/状态，以乐观锁或唯一约束保证只消费一次。
+4. `allow` 后通过恢复任务从 checkpoint 续跑；`deny` 后进入终态并清空 pending。
+5. 证明服务端节点没有 `input()`；写两句话解释阻塞输入为何不能水平扩展或跨重启恢复。
+
+**验收**：同一 `decision_id` 连续提交两次，危险工具最多执行一次；换租户审批被拒绝；模拟进程重启后仍可按 `thread_id` 恢复。
+
+---
+
 ## 挑战题（可选）
 
 ### C1. 把手写 Agent 两路径映射到图
@@ -238,6 +252,7 @@ def load_latest(path: Path, thread_id: str) -> dict | None: ...
 - [ ] FakeLLM 返回 dict；工具路径上 **authorize 在 registry 调用前**
 - [ ] 能口述：为何勿与真实 LangGraph API 一一对应
 - [ ] （建议）A1 或 A2 至少 1 题
+- [ ] （推荐）A3 能说清 waiting/thread_id/审批 API/恢复，不用 `input()`
 - [ ] （可选）C1
 
 ---

@@ -701,15 +701,41 @@ for m in chat.messages:  # 若未预加载，这里可能触发额外 SELECT
 
 常见工具：**Alembic**（SQLAlchemy 官方迁移伴侣）。
 
-#### 怎么写（最小心智，命令以你项目配置为准）
+#### 最小可跑流程：初始化与配置
+
+以下用同步 SQLite 降低门槛；PostgreSQL 只需替换驱动与 URL：
 
 ```bash
-# 一次性：alembic init migrations（目录名按团队约定）
-# 配置 sqlalchemy.url 或 env.py 读 DATABASE_URL
-# 让 env.py 能 import 到 Base.metadata
+pip install "sqlalchemy>=2.0" alembic
+alembic init migrations
+```
 
-alembic revision --autogenerate -m "add messages"
-# 审查生成的 upgrade/downgrade SQL —— 这一步不可省
+`alembic init` 只生成脚手架，不会自动找到模型。`alembic.ini` 可保留无密钥的本地默认值：
+
+```ini
+sqlalchemy.url = sqlite:///./orm_practice.db
+```
+
+在 `migrations/env.py` 中导入唯一的 metadata，并允许环境变量覆盖 URL：
+
+```python
+import os
+
+from models import Base
+
+config.set_main_option(
+    "sqlalchemy.url",
+    os.environ.get("DATABASE_URL", config.get_main_option("sqlalchemy.url")),
+)
+target_metadata = Base.metadata
+```
+
+正式包建议先 `pip install -e .`，不要靠修改 `sys.path` 掩盖导入问题。异步应用也可给 Alembic 单独使用同步迁移 URL（如 `postgresql+psycopg://...`）。
+
+```bash
+alembic revision --autogenerate -m "create messages"
+alembic current
+alembic history
 alembic upgrade head
 ```
 
@@ -719,11 +745,12 @@ alembic upgrade head
 改 models.py
   → alembic revision --autogenerate
   → 人肉审查 upgrade()/downgrade()
+  → 空库 upgrade + downgrade -1 + 再 upgrade
   → alembic upgrade head
   → 应用代码依赖新列/新表
 ```
 
-#### 跑一下（审查时要看什么）
+#### autogenerate 后必须审查什么
 
 打开生成的迁移文件，确认类似意图（示意）：
 
@@ -744,11 +771,25 @@ def downgrade() -> None:
     op.drop_table("messages")
 ```
 
-问自己：
+逐项检查：
 
-1. 有没有丢掉列/索引？
-2. 加 `NOT NULL` 时旧数据怎么办？
-3. `downgrade` 是否可接受（有时生产只保证 forward）？
+1. 重命名是否被误判为 `drop + add`；若是，手改为 `op.alter_column(...)`。
+2. 表、列、索引、外键、唯一约束是否完整，命名是否稳定。
+3. 加 `NOT NULL` 列时旧行如何回填；通常先加可空列 → 回填 → 再设非空。
+4. 类型转换是否需要显式 `USING`，大表 DDL 是否长时间锁表。
+5. `downgrade()` 是否真的恢复上一版；删列/删数据不可逆时应写明备份与向前修复策略。
+6. `alembic upgrade head --sql` 可辅助审阅 SQL，但不能替代真实测试库执行。
+
+#### 跑一下：升级、降级、再升级
+
+```bash
+alembic upgrade head
+alembic current
+alembic downgrade -1
+alembic upgrade head
+```
+
+`downgrade -1` 是开发/CI 烟测，不表示生产事故一定要降级 schema。若新代码已写入新格式，生产通常优先用新的向前迁移修复。
 
 #### 易错点
 
@@ -758,6 +799,8 @@ def downgrade() -> None:
 | 手工改生产表却不写迁移 | 环境漂移：本地绿、预发红 |
 | 迁移里跑难逆的数据删除又无备份 | 回滚叙事破裂 |
 | 多个 head 不合并 | 协作时分支迁移冲突 |
+| 只在已有开发库测试 | 漏掉空库从零升级或旧版本连续升级的问题 |
+| 每个 Web 副本启动时自行迁移 | 多副本竞争 DDL；应由单一 release job 执行 |
 
 #### 对照：`create_all` vs Alembic
 
@@ -787,18 +830,27 @@ def downgrade() -> None:
 库已删列，旧代码仍在写 → 线上报错
 ```
 
-#### 怎么写（保守策略直觉）
+#### 怎么写（可执行的部署顺序）
 
 ```text
 可兼容变更（加可空列 / 加表）：
-  先 migrate → 再部署读新列的代码
+  备份与监控就绪
+  → 单一 release job 执行 alembic upgrade head
+  → 验证 alembic current、表结构与关键查询
+  → 再滚动部署读取新结构的应用
+  → 观察错误率、锁等待与延迟
 
 破坏性变更：
   多步走（expand / migrate / contract）：
-  先加新列并双写 → 切读 → 再删旧列
+  Release A：加新列，旧代码仍兼容
+  → Release B：回填 + 双写并校验
+  → Release C：切读新列并停止旧列写入
+  → Release D：独立迁移删除旧列
 ```
 
 本章不要求你成为 DBA；要求你**拒绝**「改完模型直接对生产 create/drop」。
+
+CI 至少验证空库 `upgrade head`，并执行一次 `head → downgrade -1 → head`。生产不要让每个 Web worker 在启动时迁移；部署平台应使用单次 migration/release job，应用随后再启动。
 
 #### 易错点
 

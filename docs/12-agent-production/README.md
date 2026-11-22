@@ -1,6 +1,6 @@
 # 模块 12-agent-production：Agent 工程化与生产落地
 
-> 状态：`四章正文与练习已全部完成` · 预计周期：2～3 周
+> 状态：`四章正文与练习已全部完成` · 建议周期：3～4 周
 
 ## 模块目标
 
@@ -23,6 +23,8 @@ Demo 与生产的鸿沟主要在这里：没有评测就没有迭代，没有观
 2. 用你在模块 11 / Project 5～6 里的 Agent 作为实验对象；先落地最小 harness 与 trace，再谈安全与架构
 3. 系统设计章以「可评审文档」为目标，不必一次写完全部代码
 4. 全程可用 FakeLLM；评测与 CI 必须能离线复现（见 [`CONVENTIONS.md`](../CONVENTIONS.md)）
+5. 可直接运行 [Project 6 Research Agent](../../playground/projects/06-research-agent/README.md)，
+   验收队列 Worker、HITL、预算硬顶、生命周期、脱敏日志和 baseline regression
 
 ## 模块自检
 
@@ -31,6 +33,7 @@ Demo 与生产的鸿沟主要在这里：没有评测就没有迭代，没有观
 - [ ] 能说明注入风险与工具 ACL / 脱敏策略
 - [ ] 能画出同步/异步边界与降级路径
 - [ ] 能做一份可评审的系统设计检查清单
+- [ ] 能设计认证后、原子预留、超额硬拒绝的租户配额
 
 ## 导航
 

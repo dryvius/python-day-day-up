@@ -24,10 +24,10 @@
 
 - [面向对象编程](./02-advanced-python/01-oop.md)
 - [Python 数据模型](./02-advanced-python/02-data-model.md)
+- [异常系统](./02-advanced-python/06-exception-system.md)
 - [Iterator / Generator](./02-advanced-python/03-iterator-generator.md)
 - [装饰器](./02-advanced-python/04-decorator.md)
 - [上下文管理器](./02-advanced-python/05-context-manager.md)
-- [异常系统](./02-advanced-python/06-exception-system.md)
 - [类型系统](./02-advanced-python/07-typing-system.md)
 
 ### 03-engineering · Python 工程化
@@ -36,6 +36,9 @@
 - [依赖与虚拟环境](./03-engineering/02-deps-venv.md)
 - [测试（pytest）](./03-engineering/03-testing.md)
 - [Logging](./03-engineering/04-logging.md)
+- [CLI 入口与参数解析](./03-engineering/05-cli-entrypoints.md)
+- [Git 协作与 CI 门禁](./03-engineering/06-git-ci.md)
+- [调试与故障定位](./03-engineering/07-debugging.md)
 
 ### 04-systems-basics · 计算机与服务端基础
 
@@ -54,6 +57,7 @@
 - [Web 框架原理](./06-web-backend/01-web-framework-principles.md)
 - [FastAPI + Pydantic](./06-web-backend/02-fastapi-pydantic.md)
 - [认证与授权](./06-web-backend/03-auth.md)
+- [StreamingResponse 与 SSE](./06-web-backend/04-streaming-sse.md)
 
 ### 07-data-persistence · 数据库与数据持久化
 
@@ -62,6 +66,7 @@
 - [Python ORM](./07-data-persistence/03-orm.md)
 - [缓存与 Redis](./07-data-persistence/04-redis-cache.md)
 - [消息队列基础](./07-data-persistence/05-message-queue.md)
+- [数据生命周期](./07-data-persistence/06-data-lifecycle.md)
 
 ### 08-devops-architecture · 部署、运维与软件架构
 
@@ -75,6 +80,7 @@
 - [LLM API 实战](./09-ai-llm/02-llm-api.md)
 - [Prompt Engineering](./09-ai-llm/03-prompt-engineering.md)
 - [Structured Output](./09-ai-llm/04-structured-output.md)
+- [Context Packer：优先级、预算与截断](./09-ai-llm/05-context-packer.md)
 
 ### 10-rag · Embedding 与 RAG
 
@@ -86,9 +92,9 @@
 
 - [Tool Calling](./11-agent-core/01-tool-calling.md)
 - [手写一个 Agent](./11-agent-core/02-handwritten-agent.md)
+- [Agent Memory](./11-agent-core/05-agent-memory.md)
 - [Agent Framework 概览](./11-agent-core/03-agent-frameworks.md)
 - [LangGraph 与工作流](./11-agent-core/04-langgraph.md)
-- [Agent Memory](./11-agent-core/05-agent-memory.md)
 - [Multi-Agent](./11-agent-core/06-multi-agent.md)
 
 ### 12-agent-production · Agent 工程化与生产落地

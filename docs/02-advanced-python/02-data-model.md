@@ -40,7 +40,7 @@ len(messages)
 tool in registry
 agent("你好")          # 有的设计把 agent 做成可调用对象
 async with client:     # 后面上下文管理器章
-for chunk in stream:   # 下一章迭代器
+for chunk in stream:   # 后续迭代器章展开
 ```
 
 如果不会数据模型，你会写出别扭 API：
@@ -1386,11 +1386,11 @@ playground/02-advanced-python/02-data-model/
 
 ### 下一章
 
-[`03-iterator-generator.md`](./03-iterator-generator.md) —— Iterator / Generator：流式输出、惰性处理大数据、理解 `for` 背后的协议。
+[`06-exception-system.md`](./06-exception-system.md) —— 异常系统：先建立错误表达、传播与恢复边界，再学习迭代和装饰器中的失败路径。
 
 ## 导航
 
 - 返回模块：[README](./README.md)
 - 返回总览：[../../README.md](../../README.md)
 - 上一章：[面向对象编程](./01-oop.md)
-- 下一章：[Iterator / Generator](./03-iterator-generator.md)
+- 下一章（推荐学习顺序）：[异常系统](./06-exception-system.md)

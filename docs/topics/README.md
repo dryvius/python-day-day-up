@@ -20,11 +20,13 @@
 |------|------|----------|--------|
 | [记忆工程进阶](./memory-engineering.md) | 摘要树 / 图谱 / 向量长期记忆 / OS 式记忆地图 | [11 · Memory](../11-agent-core/05-agent-memory.md) + playground Store | Store 污染单测已绿，仍不够用时 |
 | [Agent Harness 总览](./agent-harness.md) | Runtime 外壳 vs Eval harness，名词不打架 | [11 手写 Agent](../11-agent-core/02-handwritten-agent.md) · [12 Eval](../12-agent-production/01-evaluation.md) | 做 Project 5/6 或对接业界「harness」说法时 |
+| [MCP 决策地图](./mcp.md) | 工具发现/调用/transport、自研 Registry、授权与供应链 | [11 Tool Calling](../11-agent-core/01-tool-calling.md) · [12 Security](../12-agent-production/03-security.md) | 要接第三方 MCP server 或让工具跨客户端复用时 |
 
 ## 可跑示例
 
 - Memory Store：[`../../playground/11-agent-core/memory/`](../../playground/11-agent-core/memory/)
 - Eval harness：[`../../playground/12-agent-production/evaluation/`](../../playground/12-agent-production/evaluation/)
+- Tool Agent / MCP bridge：[`../../playground/projects/05-tool-agent/`](../../playground/projects/05-tool-agent/)
 
 ## 建议读法
 

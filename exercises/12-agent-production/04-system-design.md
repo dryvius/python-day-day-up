@@ -152,11 +152,11 @@ async def worker_once(...) -> None:  # 从内存队列取任务，复用同一 r
 - [ ] 检索 / 上下文截断
 - [ ] `max_steps` / max_tool_calls
 - [ ] 缓存（语义或精确，注明失效）
-- [ ] 用户 / 租户配额
+- [ ] 用户 / 租户配额：Auth 解析可信 tenant，Redis 原子预留，超额硬拒绝且不调用 LLM/不入昂贵 Job
 - [ ] 评测门禁：防「更贵没更好」（对齐 Eval baseline）
 - [ ] 观测：token / latency 进报表
 
-每项用一句话写「怎么落到你的场景」。
+每项用一句话写「怎么落到你的场景」。配额项还须写明：并发竞争、Redis 故障时 fail-closed/受限降级、Job 重投不重复扣减，以及稳定错误码/重置时间。
 
 **验收**：清单 ≥7 项；显式提到评测防回归变贵。
 
@@ -493,7 +493,7 @@ B4 思路 + 参考答案
 - [x] 上下文截断：top_k 与 max_chars；超长对话摘要
 - [x] max_steps=8（同步 4）；防止空转烧钱
 - [x] 精确缓存：相同问题短 TTL；变更文档即失效
-- [x] 租户日配额：token 与请求双上限
+- [x] 租户日配额：Auth 得到 tenant 后 Redis 原子 reserve；超额 429 硬拒绝，Worker 重投按 job_id 复用预留
 - [x] Eval 门禁：`run_eval.py` + baseline，拒绝「accuracy 持平但 avg_steps/tokens 暴涨」的发布
 - [x] Obs：每 run 记 total_tokens / latency；周报看 p95 成本
 - [x] 工具结果 preview 截断：降上下文再喂回模型的 token

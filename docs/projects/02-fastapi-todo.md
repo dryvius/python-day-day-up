@@ -1,10 +1,11 @@
 # Project 2：FastAPI Todo
 
-> 状态：`已完成实战说明`  
-> 建议时机：完成模块 05～07 核心后（至少 FastAPI + SQL/ORM 入门）  
-> 建议工时：10～18 小时  
-> 推荐目录：`playground/projects/02-fastapi-todo/`  
+> 状态：`实战说明 + 参考实现已齐`（仓库参考实现：[`playground/projects/02-fastapi-todo/`](../../playground/projects/02-fastapi-todo/)）
+> 建议时机：完成模块 05～07 核心后（至少 FastAPI + SQL/ORM 入门）
+> 建议工时：10～18 小时
+> 推荐目录：`playground/projects/02-fastapi-todo/`
 > 运行环境：Python ≥ 3.11（见 [`../CONVENTIONS.md`](../CONVENTIONS.md)）
+> 说明：下文里程碑 / 验收中的 `[ ]` 是**学习者自检清单**，不因仓库已有参考实现而预先勾选。
 
 ## 项目目标
 
@@ -24,25 +25,27 @@
 
 ### 功能
 
-1. `POST /v1/todos` 创建（title 必填、done 默认 false）  
-2. `GET /v1/todos` 列表（可选 `?done=` 过滤）  
-3. `GET /v1/todos/{id}`、`PATCH /v1/todos/{id}`、`DELETE /v1/todos/{id}`  
-4. 全站（除 `/health`）需要 `X-API-Key`  
-5. 404 / 422 / 401 行为正确  
+1. `POST /v1/todos` 创建（title 必填、done 默认 false）
+2. `GET /v1/todos` 列表（可选 `?done=` 过滤）
+3. `GET /v1/todos/{id}`、`PATCH /v1/todos/{id}`、`DELETE /v1/todos/{id}`
+4. 全站（除 `/health`）需要 `X-API-Key`
+5. 404 / 422 / 401 行为正确
 
 ### 非功能
 
-- Pydantic v2 请求/响应模型  
-- DB 为真源；重启不丢数据  
-- 至少健康检查 + 创建/列表的自动化测试  
-- 配置来自环境变量（`APP_API_KEY`、`DATABASE_URL`）  
-- 教学可用 `!=` 校验 API Key；生产应考虑恒定时间比较（见 CONVENTIONS）  
+- Pydantic v2 请求/响应模型
+- DB 为真源；重启不丢数据
+- 至少健康检查 + 创建/列表的自动化测试
+- 配置来自环境变量（`APP_API_KEY`、`DATABASE_URL`）
+- 教学可用 `!=` 校验 API Key；生产应考虑恒定时间比较（见 CONVENTIONS）
 
 ## 建议目录
 
+学习者脚手架可用 `app/`；仓库参考实现包名为 `todo_api`。参考实现已包含 `X-Request-ID` 中间件与结构化 `request_id` 日志（对应里程碑 M3）；若自建实现，请自行补齐同等能力。
+
 ```text
 playground/projects/02-fastapi-todo/
-├── app/
+├── app/                     # 学习者脚手架示例；参考实现为 todo_api/
 │   ├── main.py
 │   ├── config.py
 │   ├── deps.py              # get_db / require_api_key
@@ -52,7 +55,7 @@ playground/projects/02-fastapi-todo/
 │   └── services/todo_service.py
 ├── tests/
 │   └── test_todos.py
-├── alembic/                 # 可选；SQLite 可用 create_all 学习期
+├── alembic/                 # 可运行迁移；应用不使用 create_all 建表
 ├── compose.yaml             # 可选 postgres
 ├── pyproject.toml
 ├── .env.example
@@ -61,28 +64,32 @@ playground/projects/02-fastapi-todo/
 
 ## 起步建议（第一天）
 
-1. SQLite + `create_all` 先跑通无鉴权 CRUD 与 `/docs`  
-2. 抽出 `schemas` / `service`，再加 `X-API-Key`  
-3. `TestClient` 覆盖：健康检查、创建、列表、错误 Key、缺 title  
+1. SQLite + Alembic 迁移先跑通无鉴权 CRUD 与 `/docs`
+2. 抽出 `schemas` / `service`，再加 `X-API-Key`
+3. `TestClient` 覆盖：健康检查、创建、列表、错误 Key、缺 title
 
 必读章节：
 
-- [FastAPI + Pydantic](../06-web-backend/02-fastapi-pydantic.md)  
-- [认证](../06-web-backend/03-auth.md)  
-- [ORM](../07-data-persistence/03-orm.md)  
+- [FastAPI + Pydantic](../06-web-backend/02-fastapi-pydantic.md)
+- [认证](../06-web-backend/03-auth.md)
+- [ORM](../07-data-persistence/03-orm.md)
+- [数据生命周期](../07-data-persistence/06-data-lifecycle.md)
 
 ## 里程碑
 
-- [ ] **M1**：内存或 SQLite；无鉴权 CRUD 跑通 + `/docs`  
-- [ ] **M2**：API Key；Pydantic；404；服务层抽离  
-- [ ] **M3**：pytest ≥4；日志带 request_id；README 含 curl 示例  
+- [ ] **M1**：内存或 SQLite；无鉴权 CRUD 跑通 + `/docs`
+- [ ] **M2**：API Key；Pydantic；404；服务层抽离
+- [ ] **M3**：pytest ≥4；日志带 request_id；README 含 curl 示例
 
 ## 验收标准
 
-- [ ] OpenAPI 中模型字段清晰  
-- [ ] 错误 Key → 401；缺 title → 422  
-- [ ] 测试不依赖手工清库（用 fixture / 事务回滚或独立测试 DB）  
-- [ ] 密钥仅环境变量；`.env` 不进仓库  
+- [ ] OpenAPI 中模型字段清晰
+- [ ] 错误 Key → 401；缺 title → 422
+- [ ] 测试不依赖手工清库（用 fixture / 事务回滚或独立测试 DB）
+- [ ] 密钥仅环境变量；`.env` 不进仓库
+- [ ] Alembic 可在空库 `upgrade head`，且最新 revision 通过 `downgrade -1 → upgrade head`
+
+参考实现：[`../../playground/projects/02-fastapi-todo/`](../../playground/projects/02-fastapi-todo/)
 
 ## 常见易错
 
@@ -96,12 +103,12 @@ playground/projects/02-fastapi-todo/
 
 ## 延伸挑战
 
-- 用户维度：Todo 归属 `user_id`（多 Key 映射）  
-- Redis 缓存 `GET` 列表，写路径删缓存  
-- 异步 SQLAlchemy + `AsyncSession`  
+- 用户维度：Todo 归属 `user_id`（多 Key 映射）
+- Redis 缓存 `GET` 列表，写路径删缓存
+- 异步 SQLAlchemy + `AsyncSession`
 
 ## 导航
 
 - 返回项目列表：[./README.md](./README.md)
-- 相关文档：[FastAPI](../06-web-backend/02-fastapi-pydantic.md) · [认证](../06-web-backend/03-auth.md) · [ORM](../07-data-persistence/03-orm.md)
+- 相关文档：[FastAPI](../06-web-backend/02-fastapi-pydantic.md) · [认证](../06-web-backend/03-auth.md) · [ORM](../07-data-persistence/03-orm.md) · [数据生命周期](../07-data-persistence/06-data-lifecycle.md)
 - 返回总览：[../../README.md](../../README.md)

@@ -1,6 +1,6 @@
 # 模块 07-data-persistence：数据库与数据持久化
 
-> 状态：`五章正文与练习已全部完成` · 预计周期：2～3 周
+> 状态：`六章正文与练习已全部完成` · 建议周期：3～4 周
 
 ## 模块目标
 
@@ -17,13 +17,16 @@ Memory、会话、任务状态、知识库元数据都依赖持久化。没有�
 3. [Python ORM](./03-orm.md) · [练习](../../exercises/07-data-persistence/03-orm.md)
 4. [缓存与 Redis](./04-redis-cache.md) · [练习](../../exercises/07-data-persistence/04-redis-cache.md)
 5. [消息队列基础](./05-message-queue.md) · [练习](../../exercises/07-data-persistence/05-message-queue.md)
+6. [数据生命周期](./06-data-lifecycle.md) · [练习](../../exercises/07-data-persistence/06-data-lifecycle.md)
 
 ## 建议学习方式
 
 1. SQL 先用 SQLite 动手，PG 概念同步建立（每章保留知识地图骨架；知识点按「为什么 → 怎么写 → 跑一下 → 易错点」推进）
-2. ORM 章节务必自己跑通一次 Session CRUD
-3. Redis/队列若环境受限，可用内存模拟，但架构图要画清楚
-4. 始终追问：数据真源在哪？缓存会不会读到陈旧数据？任务消息会不会丢或重复执行？先自己想再对照文档
+2. PostgreSQL 章会先补 `docker run/ps/logs/exec/stop` 最小操作；无需提前学完整模块 08，Dockerfile / Compose 留到部署章
+3. ORM 章节务必自己跑通一次 Session CRUD
+4. Redis/队列若环境受限，可用内存模拟，但架构图要画清楚
+5. 始终追问：数据真源在哪？缓存会不会读到陈旧数据？任务消息会不会丢或重复执行？先自己想再对照文档
+6. 为会话、日志、memory 与 vector 写清保留、导出、软删、purge 和索引同步
 
 ## 模块自检
 
@@ -32,6 +35,7 @@ Memory、会话、任务状态、知识库元数据都依赖持久化。没有�
 - [ ] 理解 ORM 模型、Session、迁移
 - [ ] 能设计缓存键/TTL 与简单限流
 - [ ] 能为 Agent 长任务设计队列 + 状态查询
+- [ ] 能设计数据 TTL/purge，并保证源数据与向量索引最终一致
 
 ## 导航
 

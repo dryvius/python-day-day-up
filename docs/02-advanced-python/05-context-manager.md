@@ -1277,11 +1277,11 @@ with 资源 as x:
 
 ### 下一章
 
-[`06-exception-system.md`](./06-exception-system.md) —— 异常系统：如何设计错误、传播错误、在 Agent 工具调用里优雅失败。
+[`07-typing-system.md`](./07-typing-system.md) —— 类型系统：用注解与 Protocol/Generic 把运行时约定写成可检查的契约。
 
 ## 导航
 
 - 返回模块：[README](./README.md)
 - 返回总览：[../../README.md](../../README.md)
 - 上一章：[装饰器](./04-decorator.md)
-- 下一章：[异常系统](./06-exception-system.md)
+- 下一章（推荐学习顺序）：[类型系统](./07-typing-system.md)

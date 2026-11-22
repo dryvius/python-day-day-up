@@ -1,0 +1,11 @@
+[
+  {"id": "hit-01", "question": "项目要求哪个 Python 版本？", "expected_source": "python.md", "expect_refusal": false},
+  {"id": "hit-02", "question": "测试框架 pytest 怎么运行？", "expected_source": "python.md", "expect_refusal": false},
+  {"id": "hit-03", "question": "RAG 默认 chunk 字符和 overlap 是多少？", "expected_source": "rag.md", "expect_refusal": false},
+  {"id": "hit-04", "question": "Top-K 检索保留哪些 metadata？", "expected_source": "rag.md", "expect_refusal": false},
+  {"id": "hit-05", "question": "审计日志 TTL 保留多久？", "expected_source": "storage.txt", "expect_refusal": false},
+  {"id": "hit-06", "question": "删除文档后向量索引如何同步？", "expected_source": "storage.txt", "expect_refusal": false},
+  {"id": "refuse-01", "question": "巴黎今天的天气如何？", "expected_source": null, "expect_refusal": true},
+  {"id": "refuse-02", "question": "公司 CEO 的电话号码是什么？", "expected_source": null, "expect_refusal": true},
+  {"id": "refuse-03", "question": "如何烤制巧克力蛋糕？", "expected_source": null, "expect_refusal": true}
+]

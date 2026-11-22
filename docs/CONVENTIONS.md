@@ -46,6 +46,24 @@ async def complete(
 
 细则在正文；项目线不重讲整章知识点；专题不代替 Memory / Eval 主线章。
 
+### 工程主题 canonical 归属
+
+为避免同一规范在多章漂移，工程主题以以下章节为准；其他章节只保留场景化摘要与链接：
+
+| 主题 | Canonical 章节 |
+|------|----------------|
+| pytest 断言、fixture、Fake 单测 | [`03-engineering/03-testing.md`](./03-engineering/03-testing.md) |
+| logging 配置、字段与脱敏 | [`03-engineering/04-logging.md`](./03-engineering/04-logging.md) |
+| CLI 入口、退出码、参数解析 | [`03-engineering/05-cli-entrypoints.md`](./03-engineering/05-cli-entrypoints.md) |
+| Git 分支/提交/回退、`.gitignore`、GitHub Actions 门禁 | [`03-engineering/06-git-ci.md`](./03-engineering/06-git-ci.md) |
+| traceback、pdb/IDE、异步与 FastAPI 定位 | [`03-engineering/07-debugging.md`](./03-engineering/07-debugging.md) |
+| FastAPI StreamingResponse、SSE framing、心跳/错误/断连 | [`06-web-backend/04-streaming-sse.md`](./06-web-backend/04-streaming-sse.md) |
+| 会话/消息/job/日志/memory/vector 的保留、导出、软删、TTL、purge 与索引同步 | [`07-data-persistence/06-data-lifecycle.md`](./07-data-persistence/06-data-lifecycle.md) |
+| 上下文优先级、预算与截断契约 | [`09-ai-llm/05-context-packer.md`](./09-ai-llm/05-context-packer.md) |
+| Provider SSE delta / tool_calls 拼装 | [`09-ai-llm/02-llm-api.md`](./09-ai-llm/02-llm-api.md) |
+| 工具副作用分级、幂等键、重试回放与补偿 | [`11-agent-core/01-tool-calling.md`](./11-agent-core/01-tool-calling.md) |
+| MCP 发现/调用/transport、Registry 与供应链选型 | [`topics/mcp.md`](./topics/mcp.md) |
+
 ## 5. Agent 安全与观测硬约定
 
 模块 11～12 与 Project 5/6 默认遵守：
@@ -74,12 +92,19 @@ async def complete(
 | `docs/topics/` | 非主线专题（记忆工程进阶、Harness 总览等） |
 | `exercises/` | 练习与验收 |
 | `docs/projects/` | 阶段性项目 |
-| `playground/` | 实验与**可跑最小示例**（Memory Store、Eval harness 等） |
+| `playground/` | 实验与可跑示例 |
+| `playground/projects/` | Project 1～6 的完整参考实现（独立安装、测试） |
 
 可跑入口：
 
 - Memory：`playground/11-agent-core/memory/`
 - Eval harness：`playground/12-agent-production/evaluation/`
+- Project 1：`playground/projects/01-cli-tool/`
+- Project 2：`playground/projects/02-fastapi-todo/`
+- Project 3：`playground/projects/03-ai-chat/`
+- Project 4：`playground/projects/04-rag-kb/`
+- Project 5：`playground/projects/05-tool-agent/`
+- Project 6：`playground/projects/06-research-agent/`
 
 ## 导航
 

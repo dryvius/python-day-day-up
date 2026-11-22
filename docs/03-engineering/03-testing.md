@@ -923,7 +923,7 @@ it("labels hot weather", async () => {
 
 ---
 
-## 6. 了解即可：覆盖率与 CI
+## 6. 了解即可：覆盖率与 CI 的关系
 
 ### 6.1 覆盖率：参考不是 KPI
 
@@ -972,48 +972,11 @@ app/messages.py             20      2    90%   14-15
 
 > 覆盖率是手电筒，不是分数榜。
 
-### 6.2 CI：每次 PR 自动跑 pytest
+### 6.2 给 CI 提供确定性的测试命令
 
-#### 为什么进 CI？
+本章只定义 pytest 侧的边界：默认测试必须快速、确定、无需真实密钥。Git 分支、GitHub Actions 工作流、权限与 required check 的完整规范，以 [`06-git-ci.md`](./06-git-ci.md) 为 canonical。
 
-本地绿了不够——别人的机器、合并前的分支，都该用同一条命令验证。CI 把 `pytest` 变成合并门槛。
-
-#### 怎么写（GitHub Actions 示意）
-
-```yaml
-# .github/workflows/test.yml
-name: test
-on:
-  pull_request:
-  push:
-    branches: [main]
-
-jobs:
-  pytest:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install
-        run: |
-          python -m pip install -U pip
-          pip install -e ".[dev]"
-          # 或：pip install pytest pytest-cov && pip install -e .
-      - name: Test
-        run: pytest -q
-```
-
-若用 uv：
-
-```yaml
-- uses: astral-sh/setup-uv@v4
-- run: uv sync --dev
-- run: uv run pytest -q
-```
-
-标记慢测并默认跳过（了解即可）：
+真实网络或模型测试应显式标记：
 
 ```python
 import pytest
@@ -1024,34 +987,46 @@ def test_real_api():
     ...
 ```
 
-```bash
-pytest -q              # 默认跑
-pytest -q -m "not slow"  # CI 常用：跳过 slow
-```
-
-需在配置里注册 mark（避免 warn）：
+在配置中注册标记：
 
 ```toml
 [tool.pytest.ini_options]
 markers = [
-  "slow: hits real network or long-running",
+  "live: requires external services or real credentials",
 ]
 ```
+
+本地与 CI 使用同一条核心命令：
+
+```bash
+python -m pytest -q -m "not live"
+```
+
+FakeLLM 通过依赖注入替代真实客户端。不要让测试根据 `CI=true` 偷偷改变断言或业务行为。
+
+#### 跑一下
+
+```bash
+python -m pytest -q -m "not live"
+```
+
+确认不提供 API Key、断网时仍可通过；再故意破坏一个断言，确认命令返回非零。
 
 #### 易错点
 
 | 错法 | 会发生什么 |
 | --- | --- |
-| CI 依赖本机已存在的密钥文件 | 流水线无该文件 → 红 |
-| CI 里跑真 LLM | 抖动、耗钱、密钥管理复杂 |
-| 只跑覆盖率不跑断言 | 数字好看但行为没锁住 |
+| 未注册 `live` mark | pytest 产生 warning，团队容易忽略标记拼错 |
+| 默认门禁跑真 LLM | 抖动、耗钱、密钥管理复杂 |
+| 只在 CI 跳过失败、本地不复现同一命令 | 形成两套测试语义 |
+| 只跑覆盖率不跑有效断言 | 数字好看但行为没锁住 |
 
 #### JS / Jest / Vitest 对照
 
 | 前端常见 | Python 常见 |
 | --- | --- |
 | `vitest run --coverage` | `pytest --cov=app` |
-| GitHub Action 里 `npm test` | Action 里 `pytest` |
+| GitHub Action 里 `npm test` | Action 里 `python -m pytest` |
 | codecov / 覆盖率评论 bot | 同样可接，非必须 |
 
 ---

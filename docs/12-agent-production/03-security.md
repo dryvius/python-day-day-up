@@ -14,6 +14,7 @@
 - **前置桥**：[`../11-agent-core/01-tool-calling.md`](../11-agent-core/01-tool-calling.md) 的 `run_tool_call`——本章在「校验参数」之前/之中插入 **`authorize(role, tool, args)`**；观测章的字段允许列表与本章脱敏同一纪律。
 - **态度**：安全不是发版前贴膏药，而是工具设计与默认拒绝；**想调用 ≠ 允许执行**。
 - **目标不是**：背攻击话术、写可滥用的注入 PoC，或假装「模型会听话所以不用 ACL」。
+- **MCP 边界**：第三方 server 视为供应链与不可信能力来源；发现、transport 与 Registry 关系见 [MCP 决策地图](../topics/mcp.md)。
 
 ## 学习目标（学完应能做到）
 
@@ -655,6 +656,8 @@ print("Critic 不继承写工具 OK")
 | 多租户过滤失败 | RAG/DB 查出他租户 | 服务端强制 `tenant_id`；检索层强制过滤 |
 | 记忆写入不该长期保存的内容 | 「记住我的密码」进长期记忆 | 记忆写入审核 / 禁止列表 / TTL |
 
+保留期、用户导出、软删/硬删、purge 与 vector 同步的 canonical 设计见[数据生命周期](../07-data-persistence/06-data-lifecycle.md)。
+
 ### 5.3 怎么写：`redact`（日志与部分对外响应）
 
 ```python
@@ -1103,3 +1106,4 @@ print("安全工具环菜单 OK")
 - 约定：[CONVENTIONS.md](../CONVENTIONS.md)
 - 工具环前置：[Tool Calling](../11-agent-core/01-tool-calling.md)
 - Multi-Agent 只读角色：[Multi-Agent](../11-agent-core/06-multi-agent.md)
+- MCP 决策地图：[topics/mcp.md](../topics/mcp.md)

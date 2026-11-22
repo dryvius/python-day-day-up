@@ -1105,7 +1105,7 @@ print("router OK")
 
 ### 模块 11 收官
 
-你已覆盖：Tool → 手写 Agent → 框架认知 → 图编排 → Memory → Multi-Agent。
+你已覆盖：Tool → 手写 Agent → Memory → 框架认知 → 图编排 → Multi-Agent。
 
 下一模块：[`../12-agent-production/README.md`](../12-agent-production/README.md) —— 评测、可观测、安全、系统设计。
 
@@ -1114,5 +1114,5 @@ print("router OK")
 ## 导航
 
 - 返回模块：[README](./README.md)
-- 上一章：[Agent Memory](./05-agent-memory.md)
+- 上一章：[LangGraph 与工作流](./04-langgraph.md)
 - 下一模块：[Agent 工程化与生产落地](../12-agent-production/README.md)

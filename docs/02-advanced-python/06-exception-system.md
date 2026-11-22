@@ -9,7 +9,7 @@
 
 - **模块目标**：建立 Python 内功，能读现代框架源码里的抽象。
 - **本章角色**：学会「如何失败」——在 Agent 工具调用、LLM API、后端接口里，错误要可区分、可追踪、可恢复。
-- **和前后章关系**：上下文管理器保证清理；异常系统决定错误如何表达与传播；下一章类型系统帮你在静态层面减少错误。
+- **推荐学习位置**：数据模型之后、迭代器与装饰器之前。先理解错误如何表达与传播，再学习重试装饰器和上下文清理。
 - **你的优势**：JS/TS 里的 `try/catch/finally`、自定义 `Error` 子类经验可以直接迁移；重点盯住 Python 独有的 `else`、`raise ... from ...`、以及 3.11+ 的 `ExceptionGroup` / `except*`。
 
 ## 学习目标（学完应能做到）
@@ -386,7 +386,7 @@ print(g())  # 2
 
 #### 易错点
 
-- 清理优先考虑 `with`（上一章上下文管理器）；`finally` 作为补充。
+- 清理优先考虑 `with`（后续上下文管理器章会展开）；`finally` 作为补充。
 - `finally` 里再 `raise`，可能掩盖 try 里的原异常——见 §7。
 - `finally` 里尽量别写复杂业务；只做清理与必达的收尾。
 
@@ -1318,12 +1318,11 @@ from 留根因
 
 ### 下一章
 
-[`07-typing-system.md`](./07-typing-system.md) —— 类型系统：用注解与 Protocol/Generic 把「约定」写清楚，减少一整类运行时错误。  
-（这也是模块 02 的收官章。）
+[`03-iterator-generator.md`](./03-iterator-generator.md) —— Iterator / Generator：理解迭代终止、惰性处理与流式输出中的错误边界。
 
 ## 导航
 
 - 返回模块：[README](./README.md)
 - 返回总览：[../../README.md](../../README.md)
-- 上一章：[上下文管理器](./05-context-manager.md)
-- 下一章：[类型系统](./07-typing-system.md)
+- 上一章（推荐学习顺序）：[Python 数据模型](./02-data-model.md)
+- 下一章（推荐学习顺序）：[Iterator / Generator](./03-iterator-generator.md)

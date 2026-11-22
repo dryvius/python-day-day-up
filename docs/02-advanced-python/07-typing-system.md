@@ -1256,7 +1256,7 @@ Generic/TypeVar = 可复用抽象（结构同、元素异）
 到这里，Python 高级特性主线已齐：
 
 ```text
-OOP → 数据模型 → 迭代生成 → 装饰器 → 上下文 → 异常 → 类型
+OOP → 数据模型 → 异常 → 迭代生成 → 装饰器 → 上下文 → 类型
 ```
 
 下一模块：[`../03-engineering/README.md`](../03-engineering/README.md)  
@@ -1266,5 +1266,5 @@ OOP → 数据模型 → 迭代生成 → 装饰器 → 上下文 → 异常 →
 
 - 返回模块：[README](./README.md)
 - 返回总览：[../../README.md](../../README.md)
-- 上一章：[异常系统](./06-exception-system.md)
+- 上一章（推荐学习顺序）：[上下文管理器](./05-context-manager.md)
 - 下一模块：[Python 工程化](../03-engineering/README.md)
